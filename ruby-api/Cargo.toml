@@ -1,0 +1,50 @@
+[package]
+name = "ruby"
+version = "0.1.0"
+authors = ["Zico <zhicong303@gmail.com>"]
+edition = "2018"
+
+[lib]
+name="ruby"
+path="src/lib.rs"
+
+[[bin]]
+name="owner-api"
+path="src/bin/owner.rs"
+
+[[bin]]
+name="authority-api"
+path="src/bin/authority.rs"
+
+[[bin]]
+name="purchaser-api"
+path="src/bin/purchaser.rs"
+
+[[bin]]
+name="fortest-ip"
+path="src/bin/example.rs"
+
+[[bin]]
+name="fortest-qua"
+path="src/bin/example2.rs"
+
+[dependencies]
+miracl_core = {version = "2.7.0", features = ["bn254", "bls12381"]}
+rand = "0.8.4"
+rand_chacha = "0.3.0"
+num-traits = "0.2.8"
+num-bigint = {version = "0.4.0", features = ["rand"]}
+num-integer = "0.1.43"
+fawkes-crypto = "4.2.5"
+base64 = { default-features = false, version = '0.13.0', features=["alloc"] }
+array-init = "2.0.0"
+
+# ruby api
+serde = { version = "1.0.130", features = ["derive"] }
+lazy_static = "1.4.0"
+warp = "0.3.2"
+parking_lot = "0.11.2"
+tokio = { version = "1.14.0", features = ["full"] }
+serde_with = "1.11.0"
+serde-big-array = "0.3.2"
+serde_json = "1.0.73"
