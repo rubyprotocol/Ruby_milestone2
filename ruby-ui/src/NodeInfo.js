@@ -33,8 +33,8 @@ function Main (props) {
           </Card.Meta>
           <Card.Description>
             Built for{' '}
-            <a href='https://zeropool.network'>
-              Zeropool Substrate Client
+            <a href='#'>
+              Substrate Client
             </a>
           </Card.Description>
         </Card.Content>

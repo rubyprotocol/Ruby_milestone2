@@ -1,46 +1,33 @@
 # Ruby Protocol
 
-There are three modules under the repo:
+There are two modules in this repo:
 
-* `zeropool-substrate-devnet` - A Substrate Node from the [zeropool-substrate](https://github.com/zeropoolnetwork/zeropool-substrate) project, **it only be used to verify zkSNARKs**;
 * `ruby-api` - The Ruby API Server;
 * `ruby-ui` - The Ruby Frontend;
 
-## Install Substrate/Zeropool Node
+## Build and Run Instruction
+### Environment setup
+```sh
+# Install Rust
+curl --tlsv1.2 https://sh.rustup.rs -sSf | sh
 
-### Requirements
-
-1. [Install Rust](https://www.rust-lang.org/tools/install)
-
-   `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
-   
-2. Install `make`
-
-   * Ubuntu: `sudo apt-get install build-essential`
-   * Mac OS: `xcode-select --install`
-
-### Build and Run
-
-To build and run the dev node, execute:
-
-```bash
-cd zeropool-substrate-devnet
-make init
-make run
+# Build the project
+cargo build
 ```
 
-## Ruby API Server
+
+### Ruby API Server
 
 Open three terminals to run the following commands respectively and keep them open until the end. 
 
-### Build Ruby API Service
+* Build Ruby API Service
 
 ```bash
 cd ruby-api
 cargo build --release
 ```
 
-### Run Authority API Service
+* Run Authority API Service
 
 ```bash
 ./target/release/authority-api
@@ -48,7 +35,7 @@ cargo build --release
 
 Authority API Service is running at http://localhost:3030
 
-### Run Data Owner API Service
+* Run Data Owner API Service
 
 ```bash
 ./target/release/owner-api
@@ -56,21 +43,27 @@ Authority API Service is running at http://localhost:3030
 
 Data Owner API Service is running at http://localhost:3035
 
-### Run Data Purchaser API Service
+* Run Data Purchaser API Service
 
 ```bash
 ./target/release/purchaser-api
 ```
 
-Data Purchaser API Service is running at http://localhost:3031
+Data Purchaser API Service is running at http://localhost:3031    
 
-## Ruby Frontend
+### zero-pool-node
 
-### Requirements
+Ruby invokes zeropool to perform zero-knowledge proof verification. You need to run a local node before moving to the next step.    
+
+The instruction on how to run a zeropool node can be found in [here](https://github.com/zeropoolnetwork/zeropool-substrate) or in Milestone 1 delivery [readme](https://github.com/Ruby-Protocol/private_ml/blob/main/README.md#use-zeropool-substrate-to-verify-zk-proof)
+
+### Ruby Frontend
+
+* Environment setup
 
 1. [Install Node.js](https://nodejs.dev/): 
 
-### Build and Run
+* Build and Run
 
 To build and connect to the running dev node, execute:
 

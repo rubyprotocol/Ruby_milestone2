@@ -1,8 +1,7 @@
 {
-  "name": "zeropool-substrate-client",
+  "name": "substrate-client",
   "version": "1.0.0",
   "private": true,
-  "author": "Samuele Landi <samuele@landi.ae>",
   "license": "Unlicense",
   "scripts": {
     "start": "react-scripts start",
@@ -88,10 +87,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "homepage": "https://zeropool.network",
-  "bugs": {
-    "url": "https://zeropool.network"
   },
   "keywords": [
     "substrate",

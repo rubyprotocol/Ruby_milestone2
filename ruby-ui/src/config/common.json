@@ -1,5 +1,5 @@
 {
-  "APP_NAME": "zeropool-substrate-client",
+  "APP_NAME": "substrate-client",
   "DEVELOPMENT_KEYRING": true,
   "RPC": {}
 }
