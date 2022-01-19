@@ -1,11 +1,11 @@
-use rand::{RngCore};
-use num_bigint::{BigInt};
+use num_bigint::BigInt;
 use num_traits::Num;
+use rand::RngCore;
 
+use ruby::define::{pair, CURVE_ORDER};
 use ruby::define::{BigNum, G1, G2};
-use ruby::utils::{baby_step_giant_step, baby_step_giant_step_g1};
 use ruby::utils::rand_utils::{RandUtilsRand, RandUtilsRng, Sample};
-use ruby::define::{CURVE_ORDER, pair};
+use ruby::utils::{baby_step_giant_step, baby_step_giant_step_g1};
 
 #[cfg(test)]
 mod tests {
@@ -23,7 +23,7 @@ mod tests {
         let x = BigNum::new_int(1335);
 
         let h = g.pow(&x);
-        let result = baby_step_giant_step(&h, &g, &bound); 
+        let result = baby_step_giant_step(&h, &g, &bound);
         assert!(result.is_some());
 
         let x = BigInt::from_str_radix(&x.tostring(), 16).unwrap();
@@ -34,13 +34,13 @@ mod tests {
     fn test_baby_step_giant_step_g1() {
         let g1 = G1::generator();
 
-        let bound = BigNum::new_int(1<<13);
+        let bound = BigNum::new_int(1 << 13);
         let y = -2149;
         let mut x = BigNum::new_int(y);
         x.add(&CURVE_ORDER);
 
         let h = g1.mul(&x);
-        let result = baby_step_giant_step_g1(&h, &g1, &bound); 
+        let result = baby_step_giant_step_g1(&h, &g1, &bound);
         assert!(result.is_some());
 
         let y = BigInt::from(y);
@@ -63,25 +63,53 @@ mod tests {
     }
 
     #[test]
-    fn test_rand_utils_rng () {
+    fn test_rand_utils_rng() {
         let mut rand_utils = RandUtilsRng::new();
         println!("next u32: {:?}", rand_utils.rng.next_u32());
-        println!("next big int mod: {:?}", rand_utils.sample(&BigInt::from(1000)));
-        println!("next big int range: {:?}", rand_utils.sample_range(&BigInt::from(50), &BigInt::from(100)));
-        println!("next big int mod vec: {:?}", rand_utils.sample_vec(5, &BigInt::from(1000)));
-        println!("next big int range vec: {:?}", rand_utils.sample_range_vec(5, &BigInt::from(50), &BigInt::from(100)));
-        println!("next bit int array: {:?}", rand_utils.sample_array::<5>(&BigInt::from(1000)));
+        println!(
+            "next big int mod: {:?}",
+            rand_utils.sample(&BigInt::from(1000))
+        );
+        println!(
+            "next big int range: {:?}",
+            rand_utils.sample_range(&BigInt::from(50), &BigInt::from(100))
+        );
+        println!(
+            "next big int mod vec: {:?}",
+            rand_utils.sample_vec(5, &BigInt::from(1000))
+        );
+        println!(
+            "next big int range vec: {:?}",
+            rand_utils.sample_range_vec(5, &BigInt::from(50), &BigInt::from(100))
+        );
+        println!(
+            "next bit int array: {:?}",
+            rand_utils.sample_array::<5>(&BigInt::from(1000))
+        );
     }
 
     #[test]
-    fn test_rand_utils_rand () {
+    fn test_rand_utils_rand() {
         let mut rand_utils = RandUtilsRand::new();
-        println!("next big int mod: {:?}", rand_utils.sample(&BigNum::new_int(1000)));
-        println!("next big int range: {:?}", rand_utils.sample_range(&BigNum::new_int(50), &BigNum::new_int(100)));
-        println!("next big int mod vec: {:?}", rand_utils.sample_vec(5, &BigNum::new_int(1000)));
-        println!("next big int range vec: {:?}", rand_utils.sample_range_vec(5, &BigNum::new_int(50), &BigNum::new_int(100)));
-        println!("next bit int array: {:?}", rand_utils.sample_array::<5>(&BigNum::new_int(1000)));
+        println!(
+            "next big int mod: {:?}",
+            rand_utils.sample(&BigNum::new_int(1000))
+        );
+        println!(
+            "next big int range: {:?}",
+            rand_utils.sample_range(&BigNum::new_int(50), &BigNum::new_int(100))
+        );
+        println!(
+            "next big int mod vec: {:?}",
+            rand_utils.sample_vec(5, &BigNum::new_int(1000))
+        );
+        println!(
+            "next big int range vec: {:?}",
+            rand_utils.sample_range_vec(5, &BigNum::new_int(50), &BigNum::new_int(100))
+        );
+        println!(
+            "next bit int array: {:?}",
+            rand_utils.sample_array::<5>(&BigNum::new_int(1000))
+        );
     }
-
-
 }

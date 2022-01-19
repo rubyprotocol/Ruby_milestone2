@@ -1,16 +1,19 @@
-use num_bigint::BigInt;
 use crate::rand_chacha::rand_core::{RngCore, SeedableRng};
-use rand_chacha::ChaCha20Rng;
+use num_bigint::BigInt;
 use num_integer::Integer;
+use rand_chacha::ChaCha20Rng;
 use std::convert::TryInto;
 
-use crate::utils::{reduce};
-use crate::utils::rand_utils::{RandUtilsRng, RandUtilsRand, Sample};
-use crate::define::{BigNum};
-
+use crate::define::BigNum;
+use crate::utils::rand_utils::{RandUtilsRand, RandUtilsRng, Sample};
+use crate::utils::reduce;
 
 pub fn convert(src: &BigIntMatrix, modulus: &BigInt) -> BigNumMatrix {
-    let mut dst = BigNumMatrix::new(src.n_rows, src.n_cols, &BigNum::fromstring(modulus.to_str_radix(16)));
+    let mut dst = BigNumMatrix::new(
+        src.n_rows,
+        src.n_cols,
+        &BigNum::fromstring(modulus.to_str_radix(16)),
+    );
     for i in 0..src.n_rows {
         for j in 0..src.n_cols {
             let fij = src.get_element(i, j);
@@ -22,13 +25,12 @@ pub fn convert(src: &BigIntMatrix, modulus: &BigInt) -> BigNumMatrix {
     dst
 }
 
-
 #[derive(Debug)]
 pub struct BigNumMatrix {
     pub data: Vec<BigNum>,
     pub n_rows: usize,
     pub n_cols: usize,
-    pub modulus: BigNum
+    pub modulus: BigNum,
 }
 
 impl BigNumMatrix {
@@ -37,7 +39,7 @@ impl BigNumMatrix {
             data: vec![BigNum::new(); n_rows * n_cols],
             n_rows,
             n_cols,
-            modulus: *modulus
+            modulus: *modulus,
         }
     }
 
@@ -52,13 +54,18 @@ impl BigNumMatrix {
             data,
             n_rows,
             n_cols,
-            modulus: *modulus
+            modulus: *modulus,
         }
     }
 
     pub fn new_bigints(a: &[BigNum], n_rows: usize, n_cols: usize, modulus: &BigNum) -> Self {
         if a.len() != n_rows * n_cols {
-            panic!("Malformed input: a.len ({}), n_rows: {}, n_cols: {}", a.len(), n_rows, n_cols);
+            panic!(
+                "Malformed input: a.len ({}), n_rows: {}, n_cols: {}",
+                a.len(),
+                n_rows,
+                n_cols
+            );
         }
         let mut data: Vec<BigNum> = Vec::with_capacity(n_rows * n_cols);
         data.extend_from_slice(a);
@@ -66,7 +73,7 @@ impl BigNumMatrix {
             data,
             n_rows,
             n_cols,
-            modulus: *modulus
+            modulus: *modulus,
         }
     }
 
@@ -80,14 +87,22 @@ impl BigNumMatrix {
 
     pub fn matmul(&self, other: &BigNumMatrix) -> BigNumMatrix {
         if self.n_cols != other.n_rows {
-            panic!("Malformed input: self.dim ({} x {}), other.dim ({} x {})", self.n_rows, self.n_cols, other.n_rows, other.n_cols);
+            panic!(
+                "Malformed input: self.dim ({} x {}), other.dim ({} x {})",
+                self.n_rows, self.n_cols, other.n_rows, other.n_cols
+            );
         }
-        let mut data: Vec<BigNum>  = vec![BigNum::new(); self.n_rows * other.n_cols];
+        let mut data: Vec<BigNum> = vec![BigNum::new(); self.n_rows * other.n_cols];
         for i in 0..self.n_rows {
             for j in 0..self.n_cols {
                 for k in 0..other.n_cols {
-                    let tmp = BigNum::modmul(self.get_element(i, j), other.get_element(j, k), &self.modulus);
-                    data[i * other.n_cols + k] = BigNum::modadd(&data[i * other.n_cols + k], &tmp, &self.modulus); 
+                    let tmp = BigNum::modmul(
+                        self.get_element(i, j),
+                        other.get_element(j, k),
+                        &self.modulus,
+                    );
+                    data[i * other.n_cols + k] =
+                        BigNum::modadd(&data[i * other.n_cols + k], &tmp, &self.modulus);
                 }
             }
         }
@@ -95,7 +110,7 @@ impl BigNumMatrix {
             data,
             n_rows: self.n_rows,
             n_cols: other.n_cols,
-            modulus: self.modulus
+            modulus: self.modulus,
         }
     }
 
@@ -108,9 +123,7 @@ impl BigNumMatrix {
         }
         t
     }
-
 }
-
 
 #[derive(Debug)]
 pub struct BigNumMatrix2x2 {
@@ -164,11 +177,19 @@ impl BigNumMatrix2x2 {
         if det.iszilch() {
             panic!("Matrix determinant is zero");
         }
-        det.invmodp(modulus); 
+        det.invmodp(modulus);
         let det_inv = det;
         let e00 = BigNum::modmul(self.get_element(1, 1), &det_inv, modulus);
-        let e01 = BigNum::modmul(&(BigNum::modneg(self.get_element(0, 1), modulus)), &det_inv, modulus);
-        let e10 = BigNum::modmul(&(BigNum::modneg(self.get_element(1, 0), modulus)), &det_inv, modulus);
+        let e01 = BigNum::modmul(
+            &(BigNum::modneg(self.get_element(0, 1), modulus)),
+            &det_inv,
+            modulus,
+        );
+        let e10 = BigNum::modmul(
+            &(BigNum::modneg(self.get_element(1, 0), modulus)),
+            &det_inv,
+            modulus,
+        );
         let e11 = BigNum::modmul(self.get_element(0, 0), &det_inv, modulus);
         Self {
             data: vec![e00, e01, e10, e11],
@@ -176,17 +197,15 @@ impl BigNumMatrix2x2 {
     }
 
     pub fn transpose(&mut self) {
-        self.data.swap(1, 2); 
+        self.data.swap(1, 2);
     }
 }
 
-
-#[derive(Debug)]
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct BigIntMatrix {
     data: Vec<BigInt>,
     pub n_rows: usize,
-    pub n_cols: usize
+    pub n_cols: usize,
 }
 
 impl BigIntMatrix {
@@ -214,24 +233,29 @@ impl BigIntMatrix {
 
     pub fn new_bigints(a: &[BigInt], n_rows: usize, n_cols: usize) -> Self {
         if a.len() != n_rows * n_cols {
-            panic!("Malformed input: a.len ({}), n_rows: {}, n_cols: {}", a.len(), n_rows, n_cols);
+            panic!(
+                "Malformed input: a.len ({}), n_rows: {}, n_cols: {}",
+                a.len(),
+                n_rows,
+                n_cols
+            );
         }
         let mut data: Vec<BigInt> = Vec::with_capacity(n_rows * n_cols);
         data.extend_from_slice(a);
         Self {
             data,
             n_rows,
-            n_cols
+            n_cols,
         }
     }
 
     pub fn new_random(n_rows: usize, n_cols: usize, low: &BigInt, high: &BigInt) -> Self {
         let mut rng = RandUtilsRng::new();
-        let data: Vec<BigInt> = rng.sample_range_vec(n_rows * n_cols, low, high); 
+        let data: Vec<BigInt> = rng.sample_range_vec(n_rows * n_cols, low, high);
         Self {
-            data, 
+            data,
             n_rows,
-            n_cols
+            n_cols,
         }
     }
 
@@ -245,9 +269,12 @@ impl BigIntMatrix {
 
     pub fn matmul(&self, other: &BigIntMatrix) -> BigIntMatrix {
         if self.n_cols != other.n_rows {
-            panic!("Malformed input: self.dim ({} x {}), other.dim ({} x {})", self.n_rows, self.n_cols, other.n_rows, other.n_cols);
+            panic!(
+                "Malformed input: self.dim ({} x {}), other.dim ({} x {})",
+                self.n_rows, self.n_cols, other.n_rows, other.n_cols
+            );
         }
-        let mut data: Vec<BigInt>  = vec![BigInt::from(0); self.n_rows * other.n_cols];
+        let mut data: Vec<BigInt> = vec![BigInt::from(0); self.n_rows * other.n_cols];
         for i in 0..self.n_rows {
             for j in 0..self.n_cols {
                 for k in 0..other.n_cols {
@@ -258,7 +285,7 @@ impl BigIntMatrix {
         Self {
             data,
             n_rows: self.n_rows,
-            n_cols: other.n_cols
+            n_cols: other.n_cols,
         }
     }
 
@@ -273,8 +300,7 @@ impl BigIntMatrix {
     }
 }
 
-#[derive(Debug)]
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct BigIntMatrix2x2 {
     data: Vec<BigInt>,
 }
@@ -335,4 +361,3 @@ impl BigIntMatrix2x2 {
         }
     }
 }
-

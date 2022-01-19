@@ -1,18 +1,18 @@
-use num_bigint::{BigInt};
-use std::convert::TryInto;
-use crate::define::{G1Vector};
-use crate::dmcfe_ip::{Dmcfe};
+use crate::define::G1Vector;
+use crate::dmcfe_ip::Dmcfe;
 use crate::traits::FunctionalEncryption;
+use num_bigint::BigInt;
+use std::convert::TryInto;
 
 /// The disease prediction application in the following paper:
-/// 
+///
 /// Marc, T., Stopar, M., Hartman, J., Bizjak, M., & Modic, J. (2019, September). Privacy-Enhanced Machine Learning with Functional Encryption. In European Symposium on Research in Computer Security (pp. 3-21). Springer, Cham.
 pub struct DiseasePrediction<'a> {
     pub y1: [f32; 8],
     pub y2: [f32; 8],
     pub scale: f32,
     pub bound: f32,
-    pub label: &'a str, 
+    pub label: &'a str,
     fe: Dmcfe<8>,
 }
 
@@ -23,7 +23,6 @@ impl<'a> Default for DiseasePrediction<'a> {
 }
 
 impl<'a> DiseasePrediction<'a> {
-
     /// Constructs a new `DiseasePrediction` application.
     ///
     /// # Examples
@@ -33,8 +32,12 @@ impl<'a> DiseasePrediction<'a> {
     /// let service = DiseasePrediction::new();
     /// ```
     pub fn new() -> Self {
-        let y1: [f32; 8] = [0.34362, 2.63588, 1.8803, 1.12673, -0.90941, 0.59397, 0.5232, 0.68602];
-        let y2: [f32; 8] = [0.48123, 3.39222, 1.39862, -0.00439, 0.16081, 0.99858, 0.19035, 0.49756];
+        let y1: [f32; 8] = [
+            0.34362, 2.63588, 1.8803, 1.12673, -0.90941, 0.59397, 0.5232, 0.68602,
+        ];
+        let y2: [f32; 8] = [
+            0.48123, 3.39222, 1.39862, -0.00439, 0.16081, 0.99858, 0.19035, 0.49756,
+        ];
         let fe = Dmcfe::<8>::new();
         let scale: f32 = 100.0;
         let bound: f32 = 10.0;
@@ -45,19 +48,19 @@ impl<'a> DiseasePrediction<'a> {
             scale,
             bound,
             label,
-            fe
+            fe,
         }
     }
 
     /// Encrypt client's input: a vector of floating point values.
-    /// 
+    ///
     /// # Examples
     ///
     /// ```no_run
     /// use ruby::ml::disease_prediction::DiseasePrediction;
     /// let service = DiseasePrediction::new();
     /// let x: [f32; 8] = [0.1, -0.23, 1.1, 0.98, 5.6, -0.9, -5.0, 2.4];
-    /// let ciphers = service.encrypt(&x); 
+    /// let ciphers = service.encrypt(&x);
     /// ```
     pub fn encrypt(&self, x: &[f32; 8]) -> G1Vector {
         let mut int_x: [BigInt; 8] = Default::default();
@@ -73,7 +76,7 @@ impl<'a> DiseasePrediction<'a> {
     ///
     /// ```ignore
     /// // Following the examples of `encrypt`
-    /// let result = service.compute(&ciphers); 
+    /// let result = service.compute(&ciphers);
     /// ```
     pub fn compute(&self, ciphers: &G1Vector) -> Vec<f32> {
         let mut int_y1: [BigInt; 8] = Default::default();
@@ -87,8 +90,8 @@ impl<'a> DiseasePrediction<'a> {
         let key2 = self.fe.derive_fe_key(&int_y2);
 
         let bound = BigInt::from((self.bound * self.scale).round() as i64);
-        let x_mut_y1 = self.fe.decrypt(&ciphers, &key1, &bound).unwrap(); 
-        let x_mut_y2 = self.fe.decrypt(&ciphers, &key2, &bound).unwrap(); 
+        let x_mut_y1 = self.fe.decrypt(ciphers, &key1, &bound).unwrap();
+        let x_mut_y2 = self.fe.decrypt(ciphers, &key2, &bound).unwrap();
 
         let x_mut_y1: i64 = x_mut_y1.try_into().unwrap();
         let x_mut_y2: i64 = x_mut_y2.try_into().unwrap();
@@ -97,9 +100,7 @@ impl<'a> DiseasePrediction<'a> {
         let x_mut_y2 = (x_mut_y2 as f32) / (self.scale * self.scale);
         vec![x_mut_y1, x_mut_y2]
     }
-
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -111,8 +112,8 @@ mod tests {
         }
         let mut res: f32 = 0.0;
         for i in 0..x.len() {
-            let tmp =  x[i] * y[i];
-            res = res + tmp;
+            let tmp = x[i] * y[i];
+            res += tmp;
         }
         res
     }
@@ -124,10 +125,12 @@ mod tests {
         let ciphers = service.encrypt(&x);
         let result = service.compute(&ciphers);
 
-        let ground_truth = [inner_product_result(&x, &service.y1), inner_product_result(&x, &service.y2)];
+        let ground_truth = [
+            inner_product_result(&x, &service.y1),
+            inner_product_result(&x, &service.y2),
+        ];
 
         println!("Truth: {:?}", ground_truth);
         println!("Result: {:?}", result);
     }
 }
-

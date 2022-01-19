@@ -1,10 +1,10 @@
-use num_bigint::{BigInt};
+use num_bigint::BigInt;
 
-use ruby::define::{G1, G1Vector, G2Vector};
-use ruby::utils::{inner_product_result};
-use ruby::utils::rand_utils::{RandUtilsRng, Sample};
+use ruby::define::{G1Vector, G2Vector, G1};
 use ruby::dmcfe_ip::Dmcfe;
 use ruby::traits::FunctionalEncryption;
+use ruby::utils::inner_product_result;
+use ruby::utils::rand_utils::{RandUtilsRng, Sample};
 
 #[cfg(test)]
 mod tests {
@@ -12,7 +12,7 @@ mod tests {
 
     #[test]
     fn test_dmcfe_5() {
-        let mut rng = RandUtilsRng::new(); 
+        let mut rng = RandUtilsRng::new();
         const L: usize = 5;
         let bound = BigInt::from(100);
         let low = -&bound;
@@ -37,7 +37,7 @@ mod tests {
         }
 
         let label = "dmcfe-label";
-        let x: [BigInt; L] = rng.sample_range_array::<L>(&low, &high); 
+        let x: [BigInt; L] = rng.sample_range_array::<L>(&low, &high);
         let y: [BigInt; L] = rng.sample_range_array::<L>(&low, &high);
         let plain_result = inner_product_result(&x, &y);
         println!("Groud truth: {:?}", plain_result);
@@ -62,13 +62,13 @@ mod tests {
     fn test_dmcfe_single_client() {
         use std::time::Instant;
 
-        let mut rng = RandUtilsRng::new(); 
+        let mut rng = RandUtilsRng::new();
         const L: usize = 1;
         let bound = BigInt::from(100);
         let low = -&bound;
         let high = bound.clone();
 
-        let x: [BigInt; L] = rng.sample_range_array::<L>(&low, &high); 
+        let x: [BigInt; L] = rng.sample_range_array::<L>(&low, &high);
         let y: [BigInt; L] = rng.sample_range_array::<L>(&low, &high);
         let plain_result = inner_product_result(&x, &y);
         println!("Groud truth: {:?}", plain_result);
@@ -84,7 +84,7 @@ mod tests {
         let dk = client.derive_fe_key(&y);
         let elapsed = now.elapsed();
         println!("[DMCFE Derive]: {:.2?}", elapsed);
-        
+
         let now = Instant::now();
         let xy = client.decrypt(&ciphers, &dk, &bound);
         let elapsed = now.elapsed();
@@ -94,4 +94,3 @@ mod tests {
         assert_eq!(xy.unwrap(), plain_result);
     }
 }
-

@@ -1,17 +1,13 @@
 use fawkes_crypto::{
-    backend::bellman_groth16::{
-        engines::{Engine},
-        prover::Proof,
-        verifier::VK
-    },
+    backend::bellman_groth16::{engines::Engine, prover::Proof, verifier::VK},
     ff_uint::{Num, PrimeField},
     BorshSerialize,
 };
 
-pub mod types;
 pub mod dlog;
 pub mod qp;
 pub mod sip;
+pub mod types;
 
 pub trait Zk {
     type Fr: PrimeField;
@@ -21,7 +17,7 @@ pub trait Zk {
 pub struct SnarkInfo<E: Engine> {
     pub inputs: Vec<Num<E::Fr>>,
     pub proof: Proof<E>,
-    pub vk: VK<E> 
+    pub vk: VK<E>,
 }
 
 pub trait ToEncoding {
@@ -48,7 +44,10 @@ impl<E: Engine> ToEncoding for VK<E> {
 
 impl<E: Engine> SnarkInfo<E> {
     pub fn to_substrate_proof(&self) -> String {
-        format!("{{\"proof\":\"{}\",\"input\":\"{}\"}}", self.proof.encode(), self.inputs.encode())
+        format!(
+            "{{\"proof\":\"{}\",\"input\":\"{}\"}}",
+            self.proof.encode(),
+            self.inputs.encode()
+        )
     }
 }
-
