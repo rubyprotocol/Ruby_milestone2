@@ -232,7 +232,7 @@ async fn get_ip_mpk(store: Store) -> Result<impl warp::Reply, warp::Rejection> {
     let mut result = HashMap::<String, Vec<Vec<u8>>>::new();
     let r = store.ip_pk.read().getvbytes();
     let mut bytes: Vec<Vec<u8>> = Vec::new();
-    for item in &r{
+    for item in &r {
         bytes.push(item.to_vec());
     }
     result.insert("v".to_owned(), bytes);
@@ -255,7 +255,7 @@ async fn get_qua_mpk(store: Store) -> Result<impl warp::Reply, warp::Rejection> 
     let g2tbyte_all = store.qua_pk.read().getg2tbytes();
 
     let mut g1sbyte: Vec<Vec<u8>> = Vec::new();
-    for item in &g1sbyte_all{
+    for item in &g1sbyte_all {
         g1sbyte.push(item.to_vec());
     }
     let mut g2tbyte: Vec<Vec<u8>> = Vec::new();
@@ -377,20 +377,20 @@ async fn get_qua_dk(n: EvKeyforN, store: Store) -> Result<impl warp::Reply, warp
 }
 
 async fn input_n_and_deriveip(
-    n: EvKeyforN,
+    evkey: EvKeyforN,
     store: Store,
 ) -> Result<impl warp::Reply, warp::Rejection> {
     let mut result = HashMap::<String, Vec<String>>::new();
     let _ipfe = store.ipfe.read();
-    let y = _ipfe.get(&n.buyernumber).unwrap();
+    let _y = _ipfe.get(&evkey.buyernumber).unwrap();
     let sip = store.sip.read();
     let accounts = store.receiveaccount.read();
     let g_r = store.g.read();
-    let g = g_r.get(&n.buyernumber).unwrap();
+    let g = g_r.get(&evkey.buyernumber).unwrap();
     let h_r = store.h.read();
-    let h = h_r.get(&n.buyernumber).unwrap();
+    let h = h_r.get(&evkey.buyernumber).unwrap();
     let mut _ipevk = store.ipevkey.write();
-    let dk = sip.derive_fe_key(y);
+    let dk = sip.derive_fe_key(_y);
     let sbytes = sip.get_msk();
     let mut r = [(); L].map(|_| String::new());
     for i in 0..sbytes.len() {
@@ -404,13 +404,13 @@ async fn input_n_and_deriveip(
     }
     let s: SizedVec<Num<Fr>, N> = SizedVec::from_iter(t_v);
     let mut y_tmp = [(); L].map(|_| String::new());
-    for i in 0..y.len() {
-        let yi = reduce(&y[i], &MODULUS);
+    for i in 0.._y.len() {
+        let yi = reduce(&_y[i], &MODULUS);
         y_tmp[i] = yi.to_str_radix(10);
     }
     let mut y_str: Vec<Num<Fr>> = vec![];
-    for i in 0..y.len() {
-        y_str.push(Num::from_str(&y_tmp[i]).unwrap())
+    for item in y_tmp.iter().take(_y.len()) {
+        y_str.push(Num::from_str(item).unwrap())
     }
     let y_zk: SizedVec<Num<Fr>, N> = SizedVec::from_iter(y_str);
     println!("start generate ipzkproof, please wait");
@@ -424,13 +424,13 @@ async fn input_n_and_deriveip(
     result.insert("dk".to_owned(), vec![dk.dk.tostring()]);
     result.insert(
         "owner account".to_owned(),
-        vec![accounts.get(&n.ciphernumber).unwrap().clone()],
+        vec![accounts.get(&evkey.ciphernumber).unwrap().clone()],
     );
     let mut zkproof = HashMap::<String, String>::new();
     zkproof.insert("substrate proof:".to_owned(), snark.to_substrate_proof());
     // zkproof.insert("Proof:".to_owned(),snark.proof.encode() );
     zkproof.insert("vk:".to_owned(), snark.vk.encode());
-    _ipevk.insert(n.buyernumber, dk);
+    _ipevk.insert(evkey.buyernumber, dk);
     // let zkproof = format!("Inputs:{} \n Proof:{}\n,vk:{}\n",snark.inputs.encode(),snark.proof.encode(),snark.vk.encode());
     Ok(warp::reply::json(&(result, zkproof)))
 }
@@ -468,7 +468,7 @@ async fn input_n_and_derivequa(
     }
     const N: usize = 2;
     let mut s_v: Vec<Num<Fr>> = vec![];
-    for item in &s_bignum_str{
+    for item in &s_bignum_str {
         s_v.push(Num::from_str(item).unwrap());
     }
     println!("s_v is {}", s_v.len());
@@ -513,7 +513,7 @@ async fn get_ip_cipher(n: EvKeyforN, store: Store) -> Result<impl warp::Reply, w
     let mut c0result: Vec<Vec<u8>> = Vec::new();
     let mut cresult: Vec<Vec<u8>> = Vec::new();
     c0result.push(c0byte.to_vec());
-    for item in &cbyte{
+    for item in &cbyte {
         cresult.push(item.to_vec());
     }
 
@@ -533,7 +533,7 @@ async fn get_qua_cipher(n: EvKeyforN, store: Store) -> Result<impl warp::Reply, 
     let mut aresult: Vec<Vec<u8>> = Vec::new();
     let mut bresult: Vec<Vec<u8>> = Vec::new();
     g1result.push(g1byte.to_vec());
-    for itemi in &abyte{
+    for itemi in &abyte {
         aresult.push(itemi.to_vec());
     }
     for itemj in &bbyte {

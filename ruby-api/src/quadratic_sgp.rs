@@ -49,7 +49,7 @@ impl<const L: usize> Sgp<L> {
             new_tmp.copy(&self.pk.g2t[j]);
             g2t.push(new_tmp);
         }
-        
+
         SgpPubKey { g1s, g2t }
     }
     pub fn get_msk(&self) -> (Vec<String>, Vec<String>) {

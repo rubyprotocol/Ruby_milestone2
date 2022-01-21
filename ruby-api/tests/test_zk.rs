@@ -1,24 +1,19 @@
 use fawkes_crypto::{
-    backend::bellman_groth16::{
-        verifier,
-    },
+    backend::bellman_groth16::verifier,
     core::sizedvec::SizedVec,
-    ff_uint::{Num},
+    ff_uint::Num,
     native::ecc::*,
     rand::{thread_rng, Rng},
 };
 
-
 use num_bigint::ToBigInt;
 use ruby::math::matrix::BigIntMatrix;
-
 
 use ruby::zk::qp::ZkQp;
 
 use ruby::zk::sip::ZkSip;
 use ruby::zk::types::{Fr, JjParams};
 use ruby::zk::ToEncoding;
-
 
 pub type Bn256Fr = fawkes_crypto::engines::bn256::Fr;
 pub type Bn12381Fr = fawkes_crypto::engines::bls12_381::Fr;

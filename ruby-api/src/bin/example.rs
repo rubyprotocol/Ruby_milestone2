@@ -60,11 +60,11 @@ fn main() {
 
     let mut v1 = [(); L].map(|_| ECP::pnew());
     for i in 0..L {
-        let mut tmp = sipvbytes[i];
+        let tmp = sipvbytes[i];
         print!("{} start{{", i);
         print!("spv {} is {:?}", i, sipvbytes[i]);
         println!();
-        v1[i] = ECP::frombytes(&mut tmp[..]);
+        v1[i] = ECP::frombytes(&tmp[..]);
         print!("{}th v is {:?}", i, v1[i]);
         print!("{} end}}", i);
         println!();

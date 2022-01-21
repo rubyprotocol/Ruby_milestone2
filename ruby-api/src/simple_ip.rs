@@ -41,7 +41,7 @@ impl<const L: usize> Sip<L> {
             new_tmp.copy(&self.mpk.v[i]);
             v[i] = new_tmp;
         }
-        
+
         SipMpk { v }
     }
 

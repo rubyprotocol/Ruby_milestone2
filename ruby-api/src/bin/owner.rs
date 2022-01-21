@@ -124,7 +124,7 @@ async fn encrypt_wrapperqua(quaitem: QuaInputItem) -> Result<impl warp::Reply, w
     for item in &abyte {
         aresult.push(item.to_vec());
     }
-    for item in &bbyte{
+    for item in &bbyte {
         bresult.push(item.to_vec());
     }
     result.insert("g1_mul_gamma".to_owned(), g1result);
