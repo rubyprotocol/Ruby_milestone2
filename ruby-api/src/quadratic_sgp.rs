@@ -240,12 +240,12 @@ impl<const L: usize> FunctionalEncryption for Sgp<L> {
     /// let cipher = sgp.encrypt(&x, &y);
     /// ```
     fn encrypt(&self, plain: &Self::PlainData) -> Self::CipherText {
-        let (x, y) = (&plain.x, &plain.y);
-        if x.len() != L || y.len() != L {
+        let (_x, _y) = (&plain.x, &plain.y);
+        if _x.len() != L || _y.len() != L {
             panic!(
                 "Malformed input: x.len ({}), y.len ({}), expected len ({})",
-                x.len(),
-                y.len(),
+                _x.len(),
+                _y.len(),
                 L
             );
         }
@@ -264,10 +264,11 @@ impl<const L: usize> FunctionalEncryption for Sgp<L> {
         let mut b: G2Vector = vec![G2::generator(); L * 2];
 
         for i in 0..L {
-            let xi = reduce(&x[i], &MODULUS);
+            let xi = reduce(&_x[i], &MODULUS);
             let xi = BigNum::fromstring(xi.to_str_radix(16));
 
-            let yi = reduce(&y[i], &MODULUS);
+            
+            let yi = reduce(&_y[i], &MODULUS);
             let yi = BigNum::fromstring(yi.to_str_radix(16));
 
             let w00_mul_xi = BigNum::modmul(w_inv.get_element(0, 0), &xi, &CURVE_ORDER);

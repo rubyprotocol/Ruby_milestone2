@@ -1,3 +1,4 @@
+#![allow(clippy::needless_range_loop)]
 use miracl_core::bn254::ecp::ECP;
 use miracl_core::bn254::ecp2::ECP2;
 use num_bigint::{BigInt, Sign, ToBigInt};

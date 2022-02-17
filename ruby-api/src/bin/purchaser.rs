@@ -1,3 +1,4 @@
+#![allow(clippy::needless_range_loop)]
 use fawkes_crypto::{
     ff_uint::Num,
     native::ecc::*,

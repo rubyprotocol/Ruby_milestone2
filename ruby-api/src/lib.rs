@@ -1,3 +1,7 @@
+#![allow(clippy::needless_range_loop)]
+#![allow(clippy::many_single_char_names)]
+#![allow(clippy::ptr_arg)]
+
 extern crate lazy_static;
 extern crate miracl_core;
 extern crate num_bigint;
