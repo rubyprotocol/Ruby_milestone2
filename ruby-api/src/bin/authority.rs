@@ -1,4 +1,6 @@
 #![allow(clippy::needless_range_loop)]
+#![allow(dead_code)]
+
 use fawkes_crypto::{core::sizedvec::SizedVec, ff_uint::Num, native::ecc::*};
 use miracl_core::bn254::ecp::ECP;
 use miracl_core::bn254::ecp2::ECP2;

@@ -1,3 +1,4 @@
+
 use miracl_core::hash256::HASH256;
 use num_bigint::BigInt;
 use num_traits::Num;
@@ -94,7 +95,7 @@ impl<const L: usize> FunctionalEncryption for Dmcfe<L> {
         }
 
         for i in 0..2 {
-            let ex_label = format!("{} {}", i.to_string(), y_str);
+            let ex_label = format!("{} {}", i, y_str);
             hs[i] = hash_to_g2(&ex_label);
             fe_key[i].inf();
         }
@@ -229,7 +230,7 @@ impl<const L: usize> Dmcfe<L> {
         cipher.inf();
 
         for i in 0..2 {
-            let ex_label = format!("{} {}", i.to_string(), label);
+            let ex_label = format!("{} {}", i, label);
             let mut h = hash_to_g1(&ex_label);
             h = h.mul(&self.s[i]);
             cipher.add(&h);
@@ -267,7 +268,7 @@ impl<const L: usize> Dmcfe<L> {
         }
 
         for i in 0..2 {
-            let ex_label = format!("{} {}", i.to_string(), y_str);
+            let ex_label = format!("{} {}", i, y_str);
             hs[i] = hash_to_g2(&ex_label);
         }
 
@@ -361,7 +362,7 @@ impl<const L: usize> Dmcfe<L> {
         let mut pair: Gt;
         t.one();
         for i in 0..2 {
-            let ex_label = format!("{} {}", i.to_string(), label);
+            let ex_label = format!("{} {}", i, label);
             let h = hash_to_g1(&ex_label);
             pair = pair::ate(&dk.key[i], &h);
             pair = pair::fexp(&pair);

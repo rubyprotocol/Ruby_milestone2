@@ -1,6 +1,8 @@
 #![allow(clippy::needless_range_loop)]
 #![allow(clippy::many_single_char_names)]
 #![allow(clippy::ptr_arg)]
+#![allow(clippy::to_string_in_display)]
+#![allow(dead_code)]
 
 extern crate lazy_static;
 extern crate miracl_core;
