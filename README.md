@@ -54,7 +54,7 @@ Data Purchaser API Service is running at http://localhost:3031
 ### zero-pool-node
 
 Ruby invokes zeropool to perform zero-knowledge proof verification. You need to run a local node before moving to the next step.    
-The instruction on how to run a zeropool node can be found in [here](https://github.com/zeropoolnetwork/zeropool-substrate) or in Milestone 1 delivery [readme](https://github.com/Ruby-Protocol/private_ml/blob/main/README.md#use-zeropool-substrate-to-verify-zk-proof)
+The instruction on how to run a zeropool node can be found in [here](https://github.com/lornacrevelingwgo23/zeropool_substrate_fork/blob/main/README.md)
 
 ### Ruby Frontend
 
